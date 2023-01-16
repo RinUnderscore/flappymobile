@@ -87,6 +87,13 @@ while run:
 
     print(score)
 
+    # Pipe Repeat System
+    if a_pass == False and score%1==0 and score != 0 and not score%2==0 and not score%3==0:
+        pipe_a_x = pipe_c_x + 300
+    if b_pass == False and score%2==0 and score != 0:
+        pipe_b_x = pipe_a_x + 300
+    if c_pass == False and score%3==0 and score != 0:
+        pipe_c_x = pipe_b_x + 300
 
     pg.display.update()
 
