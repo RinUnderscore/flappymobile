@@ -14,15 +14,17 @@ player_data = (player_x, player_y, 50, 50)
 player_y_change = 0
 player_y_accel = 0
 
-randomizer_a = random.randint(-150,150)
+current_passer = ""
+
+randomizer_a = random.randint(-150,300)
 pipe_a_x = 300
 pipe_a_y = -500 + randomizer_a
 
-randomizer_b = random.randint(-150,150)
+randomizer_b = random.randint(-150,300)
 pipe_b_x = 600
 pipe_b_y = -500 + randomizer_b
 
-randomizer_c = random.randint(-150,150)
+randomizer_c = random.randint(-150,300)
 pipe_c_x = 900
 pipe_c_y = -500 + randomizer_c
 
@@ -52,7 +54,7 @@ while run:
     screen.blit(bg, (0,0))
     screen.blit(bird, (player_data))
 
-    time.sleep(0.01)
+    time.sleep(0.02)
     if player_y_accel > 8:
         player_y_accel = 8
     elif player_y_accel < 8:
@@ -84,12 +86,15 @@ while run:
     if pipe_a_x < 80-25 and a_pass == False and not pipe_a_x < (80-25-60):
         score += 1
         a_pass = True
+        current_passer = "a"
     if pipe_b_x < 80-25 and b_pass == False and not pipe_b_x < (80-25-60):
         score += 1
         b_pass = True
+        current_passer = "b"
     if pipe_c_x < 80-25 and c_pass == False and not pipe_c_x < (80-25-60):
         score += 1
         c_pass = True
+        current_passer = "c"
 
     if a_pass == True and pipe_a_x < (80-25-60):
         a_pass = False
@@ -113,12 +118,25 @@ while run:
     elif score >= 10:
         screen.blit(text_surface, (190,100))
 
+    # Check for Collisions
+    collider_Ax = player_x + 48
+    collider_Ay = player_y + player_y_change
+    bottom_pipe_collider_Ay = pipe_a_y + 900
+    if current_passer == "a" and pipe_a_x <= collider_Ax and pipe_a_x + 80 >= collider_Ax:
+        if collider_Ay >= bottom_pipe_collider_Ay:
+            run = False
+    if current_passer == "b" and pipe_b_x <= collider_Ax and pipe_a_x + 80 >= collider_Ax:
+        run = False
+    if current_passer == "c" and pipe_b_x <= collider_Ax and pipe_a_x + 80 >= collider_Ax:
+        run = False
+
+    print(str(collider_Ay) + " vs " + str(bottom_pipe_collider_Ay))
     pg.display.update()
 
     for event in pg.event.get():
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
                 player_y_change -= 60
-                player_y_accel = 0
+                player_y_accel = 0  
         if event.type == pg.QUIT:
             run = False
